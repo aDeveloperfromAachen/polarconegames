@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PolarCone Games - Ridiculously Cold. Seriously Fun.</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #1e3a5f;
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 25%, #3b82f6 50%, #60a5fa 75%, #dbeafe 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Snow Animation */
+        .snowflake {
+            position: fixed;
+            top: -100px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1em;
+            animation-name: snowfall;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        @keyframes snowfall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Floating Orbs */
+        .floating-orb {
+            position: fixed;
+            border-radius: 50%;
+            background: rgba(147, 197, 253, 0.2);
+            backdrop-filter: blur(10px);
+            pointer-events: none;
+            animation: float 6s ease-in-out infinite;
+            border: 2px solid rgba(219, 234, 254, 0.3);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .orb1 { width: 60px; height: 60px; top: 20%; left: 10%; animation-delay: 0s; }
+        .orb2 { width: 80px; height: 80px; top: 60%; right: 15%; animation-delay: 2s; }
+        .orb3 { width: 40px; height: 40px; bottom: 30%; left: 20%; animation-delay: 4s; }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(219, 234, 254, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(147, 197, 253, 0.2);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e40af;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #1e3a5f;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #1e40af;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 50%;
+            background: linear-gradient(45deg, #1e40af, #3b82f6);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 70%, rgba(219, 234, 254, 0.2) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 30%, rgba(147, 197, 253, 0.15) 0%, transparent 50%);
+            animation: gradientShift 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes gradientShift {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 0.6; transform: scale(1.05); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            animation: heroEntry 1.2s ease-out;
+        }
+
+        @keyframes heroEntry {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.8rem, 6vw, 5rem);
+            margin-bottom: 1.5rem;
+            font-weight: 800;
+            text-shadow: 0 4px 30px rgba(30, 58, 138, 0.5);
+            background: linear-gradient(45deg, #ffffff, #dbeafe, #bfdbfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -2px;
+        }
+
+        .hero-logo {
+            width: clamp(180px, 25vw, 320px);
+            height: auto;
+            margin: 2rem 0;
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(30, 64, 175, 0.4), 0 0 80px rgba(147, 197, 253, 0.3);
+            animation: logoHover 4s ease-in-out infinite;
+            border: 3px solid rgba(219, 234, 254, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        @keyframes logoHover {
+            0%, 100% { 
+                transform: translateY(0px) rotateY(0deg);
+                box-shadow: 0 20px 60px rgba(30, 64, 175, 0.4), 0 0 80px rgba(147, 197, 253, 0.3);
+            }
+            50% { 
+                transform: translateY(-12px) rotateY(5deg);
+                box-shadow: 0 30px 80px rgba(30, 64, 175, 0.6), 0 0 120px rgba(147, 197, 253, 0.5);
+            }
+        }
+
+        .slogan {
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            color: #dbeafe;
+            margin-bottom: 2rem;
+            font-weight: 300;
+            text-shadow: 0 2px 20px rgba(30, 58, 138, 0.5);
+            letter-spacing: 0.5px;
+        }
+
+        .hero-description {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            max-width: 700px;
+            margin: 0 auto 3.5rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 1px 10px rgba(30, 58, 138, 0.3);
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1.3rem 3.5rem;
+            background: linear-gradient(135deg, #1e40af, #3b82f6, #60a5fa);
+            color: white;
+            text-decoration: none;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 15px 40px rgba(30, 64, 175, 0.4);
+            border: 2px solid rgba(147, 197, 253, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-6px) scale(1.05);
+            box-shadow: 0 25px 60px rgba(30, 64, 175, 0.6);
+        }
+
+        /* Main Content */
+        main {
+            background: linear-gradient(180deg, rgba(219, 234, 254, 0.98) 0%, #f0f9ff 50%, rgba(240, 249, 255, 0.95) 100%);
+            position: relative;
+            z-index: 1;
+        }
+
+        section {
+            padding: 7rem 0;
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 4rem;
+            color: #1e3a5f;
+            position: relative;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(45deg, #1e40af, #3b82f6);
+            border-radius: 2px;
+        }
+
+        /* About Section */
+        .about {
+            background: linear-gradient(135deg, #f0f9ff 0%, rgba(219, 234, 254, 0.8) 100%);
+            position: relative;
+        }
+
+        .about-content {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .about p {
+            font-size: 1.4rem;
+            margin-bottom: 2.5rem;
+            color: #1e3a5f;
+            line-height: 1.9;
+        }
+
+        .vision-box {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 3.5rem;
+            border-radius: 30px;
+            box-shadow: 0 25px 80px rgba(30, 64, 175, 0.15), 0 0 0 1px rgba(147, 197, 253, 0.3);
+            margin-top: 3rem;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(219, 234, 254, 0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .vision-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .vision-box h3 {
+            color: #1e40af;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .vision-box p {
+            font-size: 1.2rem;
+            margin: 0;
+            color: #1e3a5f;
+        }
+
+        /* Games Section */
+        .games {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, #f0f9ff 100%);
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(30, 64, 175, 0.1), 0 0 0 1px rgba(147, 197, 253, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(219, 234, 254, 0.4);
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(45deg, #1e40af, #3b82f6, #60a5fa);
+            border-radius: 30px 30px 0 0;
+        }
+
+        .game-card:hover {
+            transform: translateY(-20px) rotateX(5deg);
+            box-shadow: 0 40px 100px rgba(30, 64, 175, 0.2), 0 0 0 1px rgba(147, 197, 253, 0.4);
+        }
+
+        .game-status {
+            display: inline-block;
+            padding: 0.8rem 1.8rem;
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            margin-bottom: 1.8rem;
+            font-weight: 600;
+            box-shadow: 0 8px 25px rgba(30, 64, 175, 0.3);
+            letter-spacing: 0.3px;
+        }
+
+        .game-title {
+            font-size: 1.8rem;
+            color: #1e3a5f;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .game-description {
+            color: #1e3a5f;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .coming-soon {
+            background: linear-gradient(135deg, #0c4a6e, #0369a1);
+            box-shadow: 0 8px 25px rgba(12, 74, 110, 0.3);
+        }
+
+        /* Follow Section */
+        .follow {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 25%, #3b82f6 50%, #60a5fa 100%);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .follow::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 25% 75%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 75% 25%, rgba(147, 197, 253, 0.1) 0%, transparent 50%);
+            animation: gradientPulse 6s ease-in-out infinite alternate;
+        }
+
+        @keyframes gradientPulse {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.7; }
+        }
+
+        .follow .section-title {
+            color: white;
+            position: relative;
+            z-index: 2;
+        }
+
+        .follow .section-title::after {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .follow-description {
+            font-size: 1.4rem;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 10px rgba(30, 58, 138, 0.3);
+            line-height: 1.7;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 3rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            padding: 1.8rem 3rem;
+            background: rgba(147, 197, 253, 0.2);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(219, 234, 254, 0.3);
+            box-shadow: 0 15px 40px rgba(30, 58, 138, 0.2);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .social-link:hover {
+            background: rgba(147, 197, 253, 0.3);
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 25px 60px rgba(30, 58, 138, 0.3);
+        }
+
+        .social-icon {
+            font-size: 2rem;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #0c1629 0%, #1e3a5f 100%);
+            color: #bfdbfe;
+            text-align: center;
+            padding: 4rem 0;
+            position: relative;
+        }
+
+        .footer-message {
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 10px rgba(12, 22, 41, 0.5);
+            font-weight: 500;
+        }
+
+        .footer-signature {
+            color: #93c5fd;
+            font-size: 1rem;
+            text-shadow: 0 1px 5px rgba(12, 22, 41, 0.3);
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1.5rem;
+            }
+
+            .nav-links a {
+                font-size: 0.9rem;
+            }
+
+            .hero {
+                padding: 0 1rem;
+            }
+
+            section {
+                padding: 4rem 0;
+            }
+
+            .social-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 2rem;
+            }
+
+            .social-link {
+                width: 100%;
+                max-width: 320px;
+                justify-content: center;
+            }
+
+            .games-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .game-card {
+                padding: 2rem;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(147, 197, 253, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-orb orb1"></div>
+    <div class="floating-orb orb2"></div>
+    <div class="floating-orb orb3"></div>
+
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">PolarCone Games</a>
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#games">Games</a></li>
+                <li><a href="#follow">Follow</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>PolarCone Games</h1>
+            <img src="polarcone.jpg" alt="PolarCone Games Logo" class="hero-logo">
+            <p class="slogan">Ridiculously Cold. Seriously Fun.</p>
+            <p class="hero-description">
+                Welcome to the coolest corner of mobile gaming! We're a fresh indie studio crafting delightfully addictive experiences that'll keep you coming back for more. Get ready to dive into games that blend creativity with pure entertainment.
+            </p>
+            <a href="#games" class="cta-button">
+                <span>Explore Our Games</span>
+                <span>🎮</span>
+            </a>
+        </div>
+    </section>
+
+    <main>
+        <section id="about" class="about">
+            <div class="container">
+                <h2 class="section-title">About Our Studio</h2>
+                <div class="about-content">
+                    <p>
+                        Born from a passion for creating memorable mobile experiences, PolarCone Games is where innovation meets accessibility. We believe great games don't need to be complicated—they just need to be irresistibly engaging.
+                    </p>
+                    <p>
+                        Our team of dedicated developers and designers work tirelessly to craft games that bring joy to everyday moments. Whether you're commuting, taking a break, or unwinding after a long day, we're here to add excitement to your routine.
+                    </p>
+                    <div class="vision-box">
+                        <h3>Our Vision</h3>
+                        <p>
+                            To become the go-to studio for casual and simulation games that perfectly balance simplicity with depth. We're building a universe of interconnected experiences that celebrate the joy of play, one download at a time.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="games" class="games">
+            <div class="container">
+                <h2 class="section-title">Our Games</h2>
+                <div class="games-grid">
+                    <div class="game-card">
+                        <span class="game-status">In Development</span>
+                        <h3 class="game-title">Convenience Store Simulator</h3>
+                        <p class="game-description">
+                            Step into the shoes of a convenience store owner! Manage inventory, serve customers, and build your retail empire. Experience the satisfying challenge of running your own corner store, complete with all the quirky characters and situations you'd expect.
+                        </p>
+                    </div>
+                    <div class="game-card">
+                        <span class="game-status coming-soon">Coming Soon</span>
+                        <h3 class="game-title">Next Adventure</h3>
+                        <p class="game-description">
+                            We're brewing something special in our development kitchen! Stay tuned for announcements about our next exciting project. Trust us—it's going to be worth the wait.
+                        </p>
+                    </div>
+                    <div class="game-card">
+                        <span class="game-status coming-soon">Future Projects</span>
+                        <h3 class="game-title">Innovation Pipeline</h3>
+                        <p class="game-description">
+                            The PolarCone pipeline is full of creative ideas and innovative concepts. We're always exploring new ways to bring fresh, engaging experiences to mobile gamers everywhere.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="follow" class="follow">
+            <div class="container">
+                <h2 class="section-title">Stay Connected</h2>
+                <p class="follow-description">
+                    Don't miss out on development updates, behind-the-scenes content, and launch announcements! Follow us for the latest news on all things PolarCone.
+                </p>
+                <div class="social-links">
+                    <a href="https://twitter.com/polarconegames" class="social-link" target="_blank">
+                        <span class="social-icon">🐦</span>
+                        <span>Follow on Twitter</span>
+                    </a>
+                    <a href="https://linktr.ee/polarconegames" class="social-link" target="_blank">
+                        <span class="social-icon">🔗</span>
+                        <span>All Our Links</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p class="footer-message">
+                Thanks for stopping by our digital igloo! ❄️
+            </p>
+            <p class="footer-signature">
+                Made with 🎮 and ☕ by the PolarCone Games team
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Snow Animation
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.className = 'snowflake';
+            snowflake.innerHTML = '❄';
+            
+            // Random starting position
+            snowflake.style.left = Math.random() * window.innerWidth + 'px';
+            snowflake.style.animationDuration = Math.random() * 10 + 5 + 's';
+            snowflake.style.fontSize = Math.random() * 0.8 + 0.8 + 'em';
+            snowflake.style.opacity = Math.random() * 0.6 + 0.4;
+            
+            document.body.appendChild(snowflake);
+            
+            // Remove snowflake after animation
+            setTimeout(() => {
+                if (snowflake.parentNode) {
+                    snowflake.parentNode.removeChild(snowflake);
+                }
+            }, 15000);
+        }
+
+        // Create snowflakes periodically
+        setInterval(createSnowflake, 300);
+
+        // Initial burst of snowflakes
+        for (let i = 0; i < 50; i++) {
+            setTimeout(createSnowflake, i * 100);
+        }
+
+        // Smooth scroll behavior for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Header background change on scroll
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(219, 234, 254, 0.98)';
+                header.style.boxShadow = '0 4px 30px rgba(30, 64, 175, 0.1)';
+            } else {
+                header.style.background = 'rgba(219, 234, 254, 0.95)';
+                header.style.boxShadow = 'none';
+            }
+        });
+
+        // Add parallax effect to floating orbs
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.3;
+            
+            document.querySelectorAll('.floating-orb').forEach((orb, index) => {
+                orb.style.transform = `translateY(${rate * (index + 1)}px) rotate(${rate * 0.1}deg)`;
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe game cards for stagger animation
+        document.querySelectorAll('.game-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = `all 0.8s ease ${index * 0.2}s`;
+            observer.observe(card);
+        });
+
+        // Add cursor trail effect with blue colors
+        let mouseX = 0, mouseY = 0;
+        document.addEventListener('mousemove', function(e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function createTrail() {
+            const trail = document.createElement('div');
+            trail.style.
